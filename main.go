@@ -27,8 +27,14 @@ func main() {
 	go func() {
 		defer wg.Done()
 		for scanner.Scan() {			
-			s := strings.Split(scanner.Text()[15:], " ")
-			if s[0] != "les:" {
+			line := scanner.Text()
+			if line == "No files are uploading." {
+				fmt.Println(line)
+				break
+			}
+			// Skip first line of output which might look like "Uploading 98 files:"
+			if !strings.Contains(line, " files:") {
+				s := strings.Split(line[15:], " ")				
 				fmt.Printf("Deleting %s\n", s[0])
 				delCmdName := "/var/sia/siac"
 				delCmdArgs := []string{"renter", "delete", s[0]}
